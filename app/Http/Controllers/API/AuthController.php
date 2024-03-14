@@ -23,8 +23,9 @@ class AuthController extends Controller
         ]);
         $credentials = $request->only('email', 'password');
         $token = Auth::attempt($credentials);
+        //$token = auth()->guard('api')->attempt($credentials);
 
-        print_r($token);
+        //print_r($token);
         
         if (!$token) {
             return response()->json([
@@ -45,11 +46,11 @@ class AuthController extends Controller
     public function register(Request $request)
     {
        
-       /*$request->validate([
+       $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
-        ]);*/
+        ]);
         
          $user = User::create([
             'name' => $request->name,
