@@ -1,0 +1,30 @@
+name: Deploy to WHM Hosted Webserver
+
+on:
+  push:
+    branches:
+      - main  # Change this to the branch you want to deploy from
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Copy files via SCP
+      env:
+        REMOTE_USER: 'your-username'
+        REMOTE_HOST: 'your-remote-host'
+        REMOTE_PATH: '/path/to/destination'
+      run: |
+        # Ensure the remote path exists
+        ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST "mkdir -p $REMOTE_PATH"
+        # Copy files
+        scp -o StrictHostKeyChecking=no -r ./local-path/* $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH/
